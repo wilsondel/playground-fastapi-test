@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 #Fast API
 from fastapi import FastAPI
-from fastapi import Body, Query
+from fastapi import Body, Query, Path
 
 
 app = FastAPI()
@@ -36,7 +36,31 @@ def create_person(person: Person = Body(...)): # ... -> significa que es obligat
 # a suceder que un query parameter sea obligatorio, y se cambia Optional.
 @app.get("/person/detail")
 def show_person(
-    name: Optional[str] = Query(None, min_length=1, max_length=50),
-    age: Optional[str] = Query(...)
+    name: Optional[str] = Query(
+        None, 
+        min_length=1, 
+        max_length=50,
+        title = "Person Name",
+        description = "This is the person name. It is between 1 and 50 characters"
+        ),
+    age: str = Query(
+        ..., 
+        title = "Person Age",
+        description = "This is the age of the person. It is required."
+        )
 ):
     return {name:age}
+
+
+# Validaciones: Path parameters 
+
+@app.get("/person/detail/{person_id}")
+def show_person(
+    person_id: int = Path(
+        ..., 
+        gt=0,
+        title="Person id",
+        description="This is the detailed person information"
+        )
+):
+    return {person_id: "Succeed!"}
