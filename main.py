@@ -13,6 +13,11 @@ app = FastAPI()
 
 
 # Models
+class Location(BaseModel):
+    city: str
+    state: str
+    country: str
+
 
 class Person(BaseModel):
     first_name: str
@@ -64,3 +69,23 @@ def show_person(
         )
 ):
     return {person_id: "Succeed!"}
+
+# validaciones: request body
+
+@app.put("/person/{person_id}")
+def update_person(
+    person_id: int = Path(
+        ...,
+        title = "Person updated",
+        description = "This is the person id updated"
+    ),
+    person: Person = Body(...),
+    #pido al cliente que me envie, es decir que nos envia 2 json.
+    location: Location = Body(...)
+):
+    # se convierte json a diccionarios 
+    results = person.dict()
+    # El update es el "append" de los diccionarios
+    results.update(location.dict())
+    # json con cada llave siendo cada request body.
+    return results
