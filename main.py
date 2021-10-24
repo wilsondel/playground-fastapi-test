@@ -33,42 +33,54 @@ class Country(Enum):
 
 
 class Location(BaseModel):
-    city: str
-    state: str
-    country: Country
+    city: str = Field(
+        ..., 
+        example = "bogota"
+    )
+    state: str = Field(
+        ..., 
+        example = "cundinamarca"
+    )
+    country: Country = Field(
+        ..., 
+        example = "colombia"
+    )
 
 
 class Person(BaseModel):
     first_name: str = Field(
         ..., 
         min_length= 1,
-        max_length= 50
+        max_length= 50,
+        example= "Alirio"
         )
     last_name: str = Field(
         ..., 
         min_length= 1,
-        max_length= 50
+        max_length= 50,
+        example = "Hernandez"
         )
     age: int = Field(
         ...,
         gt=0,
-        le= 120
+        le= 120,
+        example = 20
     )
     email: EmailStr
-    hair_color: Optional[HairColor] = Field(deault=None)
-    is_married: Optional[bool] = Field(deault = None)
+    hair_color: Optional[HairColor] = Field(deault=None, example = "red")
+    is_married: Optional[bool] = Field(deault = None, example = True)
 
-    class Config:
-        schema_extra = {
-            "example":{
-                "first_name": "Wilson",
-                "last_name": "Delgado",
-                "age": 19,
-                "email": "wilsondelgado.her@gmail.com",
-                "hair_color": "blonde",
-                "is_married": False
-            }
-        }
+    # class Config:
+    #     schema_extra = {
+    #         "example":{
+    #             "first_name": "Wilson",
+    #             "last_name": "Delgado",
+    #             "age": 19,
+    #             "email": "wilsondelgado.her@gmail.com",
+    #             "hair_color": "blonde",
+    #             "is_married": False
+    #         }
+    #     }
 
 
 @app.get("/")
@@ -126,12 +138,12 @@ def update_person(
     ),
     person: Person = Body(...),
     #pido al cliente que me envie, es decir que nos envia 2 json.
-    #location: Location = Body(...)
+    location: Location = Body(...)
 ):
     # se convierte json a diccionarios 
-    #results = person.dict()
+    results = person.dict()
     # El update es el "append" de los diccionarios
-    #results.update(location.dict())
+    results.update(location.dict())
     # json con cada llave siendo cada request body.
-    #return results
-    return person
+    return results
+    #return person
