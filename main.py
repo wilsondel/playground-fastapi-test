@@ -23,11 +23,19 @@ class HairColor(Enum):
     red= "red"
     blonde= "blonde"
 
+class Country(Enum):
+    colombia = "colombia"
+    argentina= "argentina"
+    brazil= "brazil"
+    united_states = "united_states"
+    mexico= "mexico"
+    spain= "spain"
+
 
 class Location(BaseModel):
     city: str
     state: str
-    country: str
+    country: Country
 
 
 class Person(BaseModel):
@@ -49,6 +57,19 @@ class Person(BaseModel):
     email: EmailStr
     hair_color: Optional[HairColor] = Field(deault=None)
     is_married: Optional[bool] = Field(deault = None)
+
+    class Config:
+        schema_extra = {
+            "example":{
+                "first_name": "Wilson",
+                "last_name": "Delgado",
+                "age": 19,
+                "email": "wilsondelgado.her@gmail.com",
+                "hair_color": "blonde",
+                "is_married": False
+            }
+        }
+
 
 @app.get("/")
 def home():
@@ -105,11 +126,12 @@ def update_person(
     ),
     person: Person = Body(...),
     #pido al cliente que me envie, es decir que nos envia 2 json.
-    location: Location = Body(...)
+    #location: Location = Body(...)
 ):
     # se convierte json a diccionarios 
-    results = person.dict()
+    #results = person.dict()
     # El update es el "append" de los diccionarios
-    results.update(location.dict())
+    #results.update(location.dict())
     # json con cada llave siendo cada request body.
-    return results
+    #return results
+    return person
