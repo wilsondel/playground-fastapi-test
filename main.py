@@ -3,7 +3,7 @@ from typing import Optional
 from enum import Enum
 
 # Pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from pydantic import Field
 
 #Fast API
@@ -46,6 +46,7 @@ class Person(BaseModel):
         gt=0,
         le= 120
     )
+    email: EmailStr
     hair_color: Optional[HairColor] = Field(deault=None)
     is_married: Optional[bool] = Field(deault = None)
 
