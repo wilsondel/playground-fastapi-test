@@ -103,12 +103,14 @@ def show_person(
         min_length=1, 
         max_length=50,
         title = "Person Name",
-        description = "This is the person name. It is between 1 and 50 characters"
+        description = "This is the person name. It is between 1 and 50 characters",
+        example = "Sofia"
         ),
     age: str = Query(
         ..., 
         title = "Person Age",
-        description = "This is the age of the person. It is required."
+        description = "This is the age of the person. It is required.",
+        example = 11
         )
 ):
     return {name:age}
@@ -122,7 +124,8 @@ def show_person(
         ..., 
         gt=0,
         title="Person id",
-        description="This is the detailed person information"
+        description="This is the detailed person information",
+        example= 123
         )
 ):
     return {person_id: "Succeed!"}
@@ -134,7 +137,8 @@ def update_person(
     person_id: int = Path(
         ...,
         title = "Person updated",
-        description = "This is the person id updated"
+        description = "This is the person id updated",
+        example = 123
     ),
     person: Person = Body(...),
     #pido al cliente que me envie, es decir que nos envia 2 json.
