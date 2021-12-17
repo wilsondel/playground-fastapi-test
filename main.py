@@ -16,6 +16,8 @@ from fastapi import Body, Query, Path
 # Body allows to do validations over body request
 # Query allows to do validations over query parameters
 # Path allows to do validations over path parameters 
+from fastapi import status
+# it allows to access different status codes
 
 
 app = FastAPI()
@@ -99,14 +101,21 @@ class Person(PersonBase):
 class PersonOut(PersonBase):
     pass
 
-@app.get("/")
+@app.get(
+    path="/", 
+    status_code=status.HTTP_200_OK
+    )
 def home():
     return {"Hello": "World!"}
 
 # Resquest and Response Body
 
 # Response model: response_model= PersonOut
-@app.post("/person/new", response_model=PersonOut)
+@app.post(
+    path="/person/new", 
+    response_model=PersonOut,
+    status_code=status.HTTP_201_CREATED
+    )
 def create_person(person: Person = Body(...)): # ... -> significa que es obligatorio
     return person
 
@@ -114,7 +123,10 @@ def create_person(person: Person = Body(...)): # ... -> significa que es obligat
 # /person/detail?name=Miguel%age=25
 # Query(...,) -> no es lo ideal, solo se hace para saber que si llega
 # a suceder que un query parameter sea obligatorio, y se cambia Optional.
-@app.get("/person/detail")
+@app.get(
+    path="/person/detail",
+    status_code = status.HTTP_200_OK
+    )
 def show_person(
     name: Optional[str] = Query(
         None, 
@@ -136,7 +148,10 @@ def show_person(
 
 # Validaciones: Path parameters 
 
-@app.get("/person/detail/{person_id}")
+@app.get(
+    path="/person/detail/{person_id}",
+    status_code=status.HTTP_200_OK
+    )
 def show_person(
     person_id: int = Path(
         ..., 
@@ -150,7 +165,10 @@ def show_person(
 
 # validaciones: request body
 
-@app.put("/person/{person_id}")
+@app.put(
+    path="/person/{person_id}",
+    status_code=status.HTTP_200_OK
+    )
 def update_person(
     person_id: int = Path(
         ...,
