@@ -53,8 +53,7 @@ class Location(BaseModel):
         example = "colombia"
     )
 
-
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name: str = Field(
         ..., 
         min_length= 1,
@@ -76,7 +75,13 @@ class Person(BaseModel):
     email: EmailStr
     hair_color: Optional[HairColor] = Field(deault=None, example = "red")
     is_married: Optional[bool] = Field(deault = None, example = True)
-    password: str = Field(..., min_length=8)
+
+
+class Person(PersonBase):
+    password: str = Field(
+        ..., 
+        min_length=8,
+        example="superSecreto")
 
     # class Config:
     #     schema_extra = {
@@ -91,28 +96,8 @@ class Person(BaseModel):
     #     }
 
 
-class PersonOut(BaseModel):
-    first_name: str = Field(
-        ..., 
-        min_length= 1,
-        max_length= 50,
-        example= "Alirio"
-        )
-    last_name: str = Field(
-        ..., 
-        min_length= 1,
-        max_length= 50,
-        example = "Hernandez"
-        )
-    age: int = Field(
-        ...,
-        gt=0,
-        le= 120,
-        example = 20
-    )
-    email: EmailStr
-    hair_color: Optional[HairColor] = Field(deault=None, example = "red")
-    is_married: Optional[bool] = Field(deault = None, example = True)
+class PersonOut(PersonBase):
+    pass
 
 @app.get("/")
 def home():
@@ -121,7 +106,7 @@ def home():
 # Resquest and Response Body
 
 # Response model: response_model= PersonOut
-@app.post("/person/new", response_model=Person, response_model_exclude={"password"})
+@app.post("/person/new", response_model=PersonOut)
 def create_person(person: Person = Body(...)): # ... -> significa que es obligatorio
     return person
 
