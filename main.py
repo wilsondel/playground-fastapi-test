@@ -1,14 +1,21 @@
 # Python
 from typing import Optional
 from enum import Enum
+# Enum allows to just accept the values that we define in 
+# the type of data we are creating. "Exotic" data and those can
+# be also imported from optional.
 
 # Pydantic
 from pydantic import BaseModel, EmailStr
 from pydantic import Field
+# Field allows to do validations over the models
 
 #Fast API
 from fastapi import FastAPI
 from fastapi import Body, Query, Path
+# Body allows to do validations over body request
+# Query allows to do validations over query parameters
+# Path allows to do validations over path parameters 
 
 
 app = FastAPI()
@@ -69,6 +76,7 @@ class Person(BaseModel):
     email: EmailStr
     hair_color: Optional[HairColor] = Field(deault=None, example = "red")
     is_married: Optional[bool] = Field(deault = None, example = True)
+    password: str = Field(..., min_length=8)
 
     # class Config:
     #     schema_extra = {
@@ -83,12 +91,37 @@ class Person(BaseModel):
     #     }
 
 
+class PersonOut(BaseModel):
+    first_name: str = Field(
+        ..., 
+        min_length= 1,
+        max_length= 50,
+        example= "Alirio"
+        )
+    last_name: str = Field(
+        ..., 
+        min_length= 1,
+        max_length= 50,
+        example = "Hernandez"
+        )
+    age: int = Field(
+        ...,
+        gt=0,
+        le= 120,
+        example = 20
+    )
+    email: EmailStr
+    hair_color: Optional[HairColor] = Field(deault=None, example = "red")
+    is_married: Optional[bool] = Field(deault = None, example = True)
+
 @app.get("/")
 def home():
     return {"Hello": "World!"}
 
 # Resquest and Response Body
-@app.post("/person/new")
+
+# Response model: response_model= PersonOut
+@app.post("/person/new", response_model=Person, response_model_exclude={"password"})
 def create_person(person: Person = Body(...)): # ... -> significa que es obligatorio
     return person
 
