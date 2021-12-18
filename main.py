@@ -19,6 +19,7 @@ from fastapi import Body, Query, Path, Form, Header, Cookie,UploadFile,File
 # Form allows to do validations and indicate over form parameters 
 from fastapi import status
 # it allows to access different status codes
+from fastapi import HTTPException
 
 
 app = FastAPI()
@@ -159,6 +160,8 @@ def show_person(
 
 # Validaciones: Path parameters 
 
+people = [i for i in range(5)]
+
 @app.get(
     path="/person/detail/{person_id}",
     status_code=status.HTTP_200_OK
@@ -172,6 +175,11 @@ def show_person(
         example= 123
         )
 ):
+    if person_id not in people:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail="This person does not exist"
+        )
     return {person_id: "Succeed!"}
 
 # validaciones: request body
