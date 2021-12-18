@@ -115,7 +115,8 @@ class LoginOut(BaseModel):
 
 @app.get(
     path="/", 
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Home"]
     )
 def home():
     return {"Hello": "World!"}
@@ -126,9 +127,13 @@ def home():
 @app.post(
     path="/person/new", 
     response_model=PersonOut,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    tags=["People"]
     )
 def create_person(person: Person = Body(...)): # ... -> significa que es obligatorio
+    '''
+    Hey Pal, this creates a person. You dont need to know more.
+    '''
     return person
 
 # Validaciones: Query parameters
@@ -137,7 +142,8 @@ def create_person(person: Person = Body(...)): # ... -> significa que es obligat
 # a suceder que un query parameter sea obligatorio, y se cambia Optional.
 @app.get(
     path="/person/detail",
-    status_code = status.HTTP_200_OK
+    status_code = status.HTTP_200_OK,
+    tags=["People"]
     )
 def show_person(
     name: Optional[str] = Query(
@@ -164,7 +170,8 @@ people = [i for i in range(5)]
 
 @app.get(
     path="/person/detail/{person_id}",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["People"]
     )
 def show_person(
     person_id: int = Path(
@@ -186,7 +193,8 @@ def show_person(
 
 @app.put(
     path="/person/{person_id}",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["People"]
     )
 def update_person(
     person_id: int = Path(
@@ -211,7 +219,8 @@ def update_person(
 @app.post(
     path='/login',
     response_model = LoginOut,
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["People"]
 )
 def login(
     username: str = Form(...),
@@ -222,7 +231,8 @@ def login(
 # Cookies and headers parameters
 @app.post(
     path='/contact',
-    status_code = status.HTTP_200_OK
+    status_code = status.HTTP_200_OK,
+    tags=["Contact"]
 )
 def contact(
     first_name: str = Form(
@@ -249,6 +259,7 @@ def contact(
 # Person will be able to upload an image
 @app.post(
     path='/post-image',
+    tags=["Files"]
 )
 def post_image(
     image: UploadFile = File(...)
@@ -260,7 +271,8 @@ def post_image(
     }
 
 @app.post(
-    path='/post-images'
+    path='/post-images',
+    tags=["Files"]
 )
 def post_images(
     images: List[UploadFile] =File(...)
