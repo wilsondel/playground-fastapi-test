@@ -12,10 +12,11 @@ from pydantic import Field
 
 #Fast API
 from fastapi import FastAPI
-from fastapi import Body, Query, Path
+from fastapi import Body, Query, Path, Form
 # Body allows to do validations over body request
 # Query allows to do validations over query parameters
 # Path allows to do validations over path parameters 
+# Form allows to do validations and indicate over form parameters 
 from fastapi import status
 # it allows to access different status codes
 
@@ -100,6 +101,16 @@ class Person(PersonBase):
 
 class PersonOut(PersonBase):
     pass
+
+
+class LoginOut(BaseModel):
+    username : str = Field(
+        ..., 
+        max_length = 20,
+        example = "wilson222002")
+    message : str = Field(
+        default = "Login successful"
+    )
 
 @app.get(
     path="/", 
@@ -187,3 +198,16 @@ def update_person(
     # json con cada llave siendo cada request body.
     return results
     #return person
+
+# Working with forms
+@app.post(
+    path='/login',
+    response_model = LoginOut,
+    status_code=status.HTTP_200_OK
+)
+def login(
+    username: str = Form(...),
+    password: str = Form(...)
+): 
+    return LoginOut(username=username)
+
