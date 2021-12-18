@@ -1,5 +1,5 @@
 # Python
-from typing import Optional
+from typing import Optional,List
 from enum import Enum
 # Enum allows to just accept the values that we define in 
 # the type of data we are creating. "Exotic" data and those can
@@ -12,7 +12,7 @@ from pydantic import Field
 
 #Fast API
 from fastapi import FastAPI
-from fastapi import Body, Query, Path, Form, Header, Cookie
+from fastapi import Body, Query, Path, Form, Header, Cookie,UploadFile,File
 # Body allows to do validations over body request
 # Query allows to do validations over query parameters
 # Path allows to do validations over path parameters 
@@ -235,3 +235,30 @@ def contact(
     ads: Optional[str] = Cookie(default=None)
 ):
     return user_agent
+
+# Files
+
+# Person will be able to upload an image
+@app.post(
+    path='/post-image',
+)
+def post_image(
+    image: UploadFile = File(...)
+):
+    return {
+        "Filename":image.filename,
+        "Format":image.content_type,
+        "Size(Kb)": round(len(image.file.read())/1024,2)
+    }
+
+@app.post(
+    path='/post-images'
+)
+def post_images(
+    images: List[UploadFile] =File(...)
+):
+    return [{
+        "Filename": image.filename,
+        "Format": image.content_type,
+        "Size(Kb)": round(len(image.file.read())/1024,2)
+    } for image in images]
